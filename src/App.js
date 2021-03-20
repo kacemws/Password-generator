@@ -27,12 +27,12 @@ const Centered = styled("div", {
   justifyContent: "center",
 });
 
-// const End = styled("div", {
-//   width: "100%",
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "flex-end",
-// });
+const End = styled("div", {
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+});
 
 export default function Hello() {
   const [useCss, theme] = useStyletron();
@@ -42,11 +42,17 @@ export default function Hello() {
   const [symbols, setSymbols] = useState(true);
   const [password, setPassword] = useState("");
 
+  const [generated, setGenerated] = useState(false);
+
   const setNewPassword = (p) => {
     const newPassword = p
       ? p
       : generatePassword({ length, numbers, uppercase, symbols });
     setPassword(newPassword);
+    setGenerated(false);
+    window.setTimeout(() => {
+      setGenerated(true);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -62,6 +68,7 @@ export default function Hello() {
               style: {
                 borderRadius: "1rem",
                 padding: "1rem",
+                minWidth: "36rem",
               },
             },
             Title: {
@@ -81,51 +88,53 @@ export default function Hello() {
               onChange={(event) => setNewPassword(event.target.value)}
               overrides={{
                 After: () => (
-                  <StatefulTooltip
-                    content={() => <Block>Generate a new password!</Block>}
-                    returnFocus
-                    autoFocus
-                  >
-                    <Button kind="minimal" shape="square">
-                      <div
-                        className={useCss({
-                          height: theme.sizing.scale800,
-                          width: theme.sizing.scale800,
-                          // backgroundColor: "red",
-                        })}
-                        onClick={() => setNewPassword()}
-                      >
-                        <Lottie
-                          options={{
-                            loop: true,
-                            autoplay: true,
-                            animationData: refresh,
-                          }}
-                        />
-                      </div>
-                    </Button>
-                  </StatefulTooltip>
+                  <Button kind="minimal" shape="square">
+                    <div
+                      className={useCss({
+                        height: theme.sizing.scale800,
+                        width: theme.sizing.scale800,
+                        // backgroundColor: "red",
+                      })}
+                    >
+                      <Lottie
+                        options={{
+                          autoplay: generated,
+                          loop: false,
+                          animationData: refresh,
+                        }}
+                      />
+                    </div>
+                  </Button>
                 ),
               }}
             />
           </StyledBody>
           <StyledAction>
-            {/* <End>
-              <Button
-                overrides={{
-                  BaseButton: {
-                    style: {
-                      margin: ".25rem 0",
-                      borderRadius: "10px",
-                      paddingTop: "10px",
-                      paddingBottom: "10px",
-                    },
-                  },
-                }}
+            <End>
+              <StatefulTooltip
+                content={() => <Block>Generate a new password!</Block>}
+                returnFocus
+                autoFocus
               >
-                Generate
-              </Button>
-            </End> */}
+                <Button
+                  kind="primary"
+                  overrides={{
+                    BaseButton: {
+                      style: {
+                        margin: ".25rem 0",
+                        borderRadius: "8px",
+                        width: "100%",
+                        paddingTop: "1rem",
+                        paddingBottom: "1rem",
+                      },
+                    },
+                  }}
+                  onClick={() => setNewPassword()}
+                >
+                  Generate
+                </Button>
+              </StatefulTooltip>
+            </End>
             <Accordion>
               <Panel title="Options">
                 <Block marginBottom="scale800">
